@@ -3,37 +3,30 @@ import { LiaEditSolid } from 'react-icons/lia'
 import moment from 'moment'
 import EthContext from '../../contexts/EthContext'
 import Web3 from 'web3'
+import NoProfile from '../../assets/images/userprofile.png'
+import { fetchUserData } from '../../utils/web3Utils'
 const PINATA_GATEWAY = import.meta.env.VITE_PINATA_PRIVATE_GATEWAY_URL
+
 function ProfileCard() {
   const {
     state: { contract, accounts },
   } = useContext(EthContext)
 
-  async function init() {
-    const data = await contract.methods
-      .getUser(accounts[0])
-      .call({ from: accounts[0] })
-      .catch((err) => {
-        console.log(err)
-      })
-    return data
-  }
-
   const [user, setUser] = useState({
     userName: '',
     imageCID: '',
-    firstName: 'Visakh',
-    lastName: 'Vijay',
+    firstName: '',
+    lastName: '',
     image: 'https://docs.material-tailwind.com/img/face-2.jpg',
-    friends: ['one', 'two'],
-    views: 5,
-    createdAt: '2015-03-25',
-    status: 'being me',
+    friends: [],
+    views: null,
+    createdAt: '',
+    status: '',
   })
 
   useEffect(() => {
     if (contract != null) {
-      const userData = init()
+      const userData = fetchUserData(accounts[0], contract, accounts)
       userData.then((data) => {
         setUser({
           ...user,
@@ -62,7 +55,7 @@ function ProfileCard() {
             src={
               user.imageCID
                 ? `${PINATA_GATEWAY}/ipfs/${user.imageCID}`
-                : user.image
+                : NoProfile
             }
             alt="avatar"
             className="w-14 h-14 object-cover rounded-full"
@@ -85,13 +78,10 @@ function ProfileCard() {
 
         {/* Profile Status */}
         <div className="w-full flex flex-col gap-2 py-4 border-b border-[#66666645]">
-          <p className="text-xl text-ascent-1 font-semibold">
+          {/* <p className="text-xl text-ascent-1 font-semibold">
             {user?.friends?.length} Friends
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="text-ascent-2">Profile Views</span>
-            <span className="text-ascent-1 text-lg">{user?.views}</span>
-          </div>
+          </p> */}
+
           <div className="flex items-center justify-between">
             <span className="text-ascent-2">Joined</span>
             <span className="text-ascent-1 text-base">
