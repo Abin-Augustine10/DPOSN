@@ -68,17 +68,45 @@ function MainSection() {
 
       for (let i = 0; i < postContent.length; i++) {
         let commentCID = ''
+        let likesCID = ''
+        let reportsCID = ''
 
         try {
           commentCID = await contract.methods
             .getComment(allPostData[i].postCID)
             .call({ from: accounts[0] })
-        } catch (error) {}
+        } catch (error) {
+          console.log('in comment: ', error)
+        }
+        try {
+          likesCID = await contract.methods
+            .getLikes(allPostData[i].postCID)
+            .call({ from: accounts[0] })
+        } catch (error) {
+          console.log('in likes: ', error)
+        }
+        try {
+          reportsCID = await contract.methods
+            .getReports(allPostData[i].postCID)
+            .call({ from: accounts[0] })
+        } catch (error) {
+          console.log('in reports: ', error)
+        }
 
         let commentData = []
+        let likesData = []
+        let reportsData = []
 
         if (commentCID) {
           commentData = await fetchJSONFromIPFS(commentCID)
+        }
+
+        if (likesCID) {
+          likesData = await fetchJSONFromIPFS(likesCID)
+        }
+
+        if (reportsCID) {
+          reportsData = await fetchJSONFromIPFS(reportsCID)
         }
 
         tempPosts.push({
@@ -96,6 +124,8 @@ function MainSection() {
             : '',
           description: postContent[i].post,
           comment: commentData,
+          likes: likesData,
+          reports: reportsData,
         })
       }
 
@@ -120,9 +150,9 @@ function MainSection() {
         <PostCard
           key={post?._id}
           post={post}
-          deletePost={() => {}}
-          likePost={() => {}}
           comments={post.comment}
+          likes={post.likes}
+          reports={post.reports}
         />
       ))}
     </div>
