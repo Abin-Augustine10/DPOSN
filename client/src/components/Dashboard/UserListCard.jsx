@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import EthContext from '../../contexts/EthContext'
 import Web3 from 'web3'
 import NoProfile from '/src/assets/images/userprofile.png'
+import { Link } from 'react-router-dom'
 
 const PINATA_GATEWAY = import.meta.env.VITE_PINATA_PRIVATE_GATEWAY_URL
 
@@ -104,14 +105,17 @@ function UserListCard() {
               alt={user?.userName}
               className="w-10 h-10 object-cover rounded-full"
             />
-            <div className="flex-1 ml-4 mt-2">
-              <p className="text-base font-medium text-ascent-1">
-                {user?.userName ? user?.userName : 'User Name'}
-              </p>
-              <span className="text-sm text-ascent-2">
-                {user?.status ? user?.status : ''}
-              </span>
-            </div>
+
+            <Link to={'/profile?user=' + user?._id}>
+              <div className="flex-1 ml-4 mt-2">
+                <p className="text-base font-medium text-ascent-1">
+                  {user?.userName ? user?.userName : 'User Name'}
+                </p>
+                <span className="text-sm text-ascent-2">
+                  {user?.status ? user?.status : ''}
+                </span>
+              </div>
+            </Link>
             <button
               onClick={() => followUser(user._id)}
               className="hover:bg-primary-600 bg-[#0444a4] text-white font-semibold py-1 px-2 rounded-md"
